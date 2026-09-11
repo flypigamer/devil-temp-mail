@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Devil Mail</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0b0b;
+    color: #fff;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+.page {
+    min-height: 100vh;
+}
+
+/* =========================
+   HOME
+========================= */
+
+#homePage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+}
+
+.home-card {
+    width: 100%;
+    max-width: 650px;
+    text-align: center;
+}
+
+.home-logo {
+    font-size: 54px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.home-subtitle {
+    color: #999;
+    font-size: 17px;
+    margin-bottom: 45px;
+}
+
+.home-title {
+    font-size: 42px;
+    margin: 0 0 20px;
+}
+
+.home-text {
+    color: #aaa;
+    font-size: 18px;
+    line-height: 1.7;
+    margin: 0 auto 35px;
+    max-width: 600px;
+}
+
+.create-btn {
+    width: 100%;
+    max-width: 430px;
+    padding: 18px 20px;
+    border: none;
+    border-radius: 14px;
+    background: #fff;
+    color: #000;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.create-btn:hover {
+    background: #ddd;
+}
+
+.login-home-btn {
+    width: 100%;
+    max-width: 430px;
+    margin-top: 12px;
+    padding: 17px 20px;
+    border: 1px solid #333;
+    border-radius: 14px;
+    background: #171717;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-home-btn:hover {
+    background: #252525;
+}
+
+.login-box {
+    display: none;
+    width: 100%;
+    max-width: 430px;
+    margin: 20px auto 0;
+    padding: 22px;
+    border: 1px solid #333;
+    border-radius: 16px;
+    background: #151515;
+    text-align: left;
+}
+
+.login-box h3 {
+    margin: 0 0 18px;
+}
+
+.login-box input {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 14px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #080808;
+    color: #fff;
+    outline: none;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #fff;
+    color: #000;
+    font-weight: bold;
+}
+
+.home-feature {
+    margin-top: 60px;
+    padding: 28px;
+    border: 1px solid #292929;
+    border-radius: 20px;
+    background: #151515;
+    text-align: left;
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #222;
+    font-size: 27px;
+    margin-bottom: 20px;
+}
+
+.home-feature h3 {
+    margin: 0 0 12px;
+}
+
+.home-feature p {
+    margin: 0;
+    color: #999;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   INBOX
+========================= */
+
+#inboxPage {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    background: #0b0b0b;
+}
+
+.top-bar {
+    height: 72px;
+    border-bottom: 1px solid #252525;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0 20px;
+}
+
+.top-logo {
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.menu-icon {
+    position: absolute;
+    left: 20px;
+    font-size: 27px;
+    color: #bbb;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    padding: 25px 18px 50px;
+}
+
+
+/* =========================
+   ACCOUNT BAR
+========================= */
+
+.account-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 18px;
+}
+
+.account-email {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: #191919;
+    border: 1px solid #3a3a3a;
+    border-radius: 14px;
+    padding: 10px 12px;
+    overflow: hidden;
+}
+
+.account-email-icon {
+    font-size: 18px;
+}
+
+.account-email span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.online-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 12px rgba(255,255,255,.7);
+    flex-shrink: 0;
+}
+
+.top-action {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    border: 1px solid #333;
+    border-radius: 50%;
+    background: #171717;
+    color: #fff;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.top-action:hover {
+    background: #292929;
+}
+
+
+/* =========================
+   ACCOUNT MENU
+========================= */
+
+.account-menu {
+    display: none;
+    position: absolute;
+    right: 18px;
+    top: 130px;
+    width: 300px;
+    padding: 20px;
+    background: #171717;
+    border: 1px solid #333;
+    border-radius: 16px;
+    z-index: 1000;
+    box-shadow: 0 15px 40px rgba(0,0,0,.5);
+}
+
+.account-menu-title {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.account-menu-email {
+    font-size: 16px;
+    font-weight: bold;
+    word-break: break-all;
+    margin-bottom: 16px;
+}
+
+.account-menu-key {
+    color: #aaa;
+    display: flex;
+    gap: 10px;
+}
+
+.account-menu-divider {
+    height: 1px;
+    background: #333;
+    margin: 18px 0;
+}
+
+.account-menu button {
+    width: 100%;
+    padding: 13px 5px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    text-align: left;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.account-menu button:hover {
+    background: #252525;
+}
+
+.account-menu .logout-btn {
+    color: #ff4d6d;
+}
+
+
+/* =========================
+   MAILBOX INFO
+========================= */
+
+.mailbox-info {
+    border: 1px solid #1f1f1f;
+    border-radius: 16px;
+    background: #111;
+    padding: 18px;
+    margin-bottom: 30px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-icon {
+    width: 32px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.info-input {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 13px;
+    border: 1px solid #333;
+    border-radius: 9px;
+    background: #080808;
+    color: #ddd;
+    outline: none;
+}
+
+.info-copy {
+    padding: 11px 14px;
+    border: 1px solid #333;
+    border-radius: 9px;
+    background: #202020;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+/* =========================
+   SUCCESS
+========================= */
+
+.success-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 18px;
+    margin-bottom: 35px;
+    border: 1px solid #333;
+    border-radius: 16px;
+    background: #151515;
+}
+
+.success-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    flex-shrink: 0;
+    font-weight: bold;
+}
+
+.success-message strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.success-message p {
+    margin: 0;
+    color: #aaa;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+
+/* =========================
+   INBOX
+========================= */
+
+.inbox-title {
+    font-size: 40px;
+    margin: 0 0 35px;
+}
+
+.inbox {
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+.empty-inbox {
+    flex: 1;
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.empty-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #191919;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+    margin-bottom: 30px;
+}
+
+.empty-inbox h3 {
+    font-size: 28px;
+    margin: 0 0 15px;
+}
+
+.empty-inbox p {
+    max-width: 550px;
+    margin: 0;
+    color: #888;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   MAIL CARD
+========================= */
+
+.mail {
+    background: #151515;
+    border: 1px solid #333;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.mail p {
+    margin: 7px 0;
+}
+
+.mail small {
+    color: #777;
+}
+
+
+/* =========================
+   NEW INBOX
+========================= */
+
+.new-inbox-btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+    border: 1px solid #333;
+    border-radius: 11px;
+    background: #fff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.new-inbox-btn:hover {
+    background: #ddd;
+}
+
+.footer {
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    margin-top: 35px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .home-logo {
+        font-size: 40px;
+    }
+
+    .home-title {
+        font-size: 32px;
+    }
+
+    .home-text {
+        font-size: 16px;
+    }
+
+    .account-bar {
+        gap: 5px;
+    }
+
+    .account-email {
+        padding: 9px 10px;
+    }
+
+    .top-action {
+        width: 39px;
+        height: 39px;
+        font-size: 16px;
+    }
+
+    .online-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .mailbox-info {
+        padding: 14px;
+    }
+
+    .inbox-title {
+        font-size: 32px;
+    }
+
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        font-size: 45px;
+    }
+
+    .empty-inbox h3 {
+        font-size: 24px;
+    }
+
+    .empty-inbox p {
+        font-size: 15px;
+    }
+
+    .account-menu {
+        right: 10px;
+        width: calc(100% - 20px);
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- HOME -->
+
+<section id="homePage" class="page">
+
+<div class="home-card">
+
+<div class="home-logo">
+😈 Devil Mail
+</div>
+
+<div class="home-subtitle">
+Fast • Simple • Private
+</div>
+
+<h1 class="home-title">
+Temporary Email
+</h1>
+
+<p class="home-text">
+Create a temporary inbox in seconds.
+Receive messages without exposing your
+personal email address.
+</p>
+
+<button id="newEmailBtn" class="create-btn">
+😈 Create Temporary Inbox
+</button>
+
+<button id="loginBtn" class="login-home-btn">
+🔐 Login Existing Account
+</button>
+
+<div id="loginBox" class="login-box">
+
+<h3>
+Login Existing Account
+</h3>
+
+<input
+id="loginEmail"
+type="text"
+placeholder="Enter your email"
+autocomplete="off"
+>
+
+<input
+id="loginKey"
+type="password"
+placeholder="Enter your access key"
+autocomplete="off"
+>
+
+<button id="doLoginBtn">
+Login
+</button>
+
+</div>
+
+<div class="home-feature">
+
+<div class="feature-icon">
+🛡️
+</div>
+
+<h3>
+Private Temporary Email
+</h3>
+
+<p>
+Keep your personal inbox separate
+while testing websites and receiving
+temporary messages.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- INBOX -->
+
+<section id="inboxPage" class="page">
+
+<div class="top-bar">
+
+<div class="menu-icon">
+☰
+</div>
+
+<div class="top-logo">
+😈 Devil Mail
+</div>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- ACCOUNT BAR -->
+
+<div class="account-bar">
+
+<div class="account-email">
+
+<span class="account-email-icon">
+✉
+</span>
+
+<span id="accountEmail">
+Your temporary email
+</span>
+
+<button
+id="copyBtn"
+class="top-action"
+title="Copy email"
+>
+⧉
+</button>
+
+</div>
+
+
+<div
+class="online-dot"
+title="Mailbox active"
+></div>
+
+
+<button
+id="refreshBtn"
+class="top-action"
+title="Refresh inbox"
+>
+↻
+</button>
+
+
+<button
+id="clearBtn"
+class="top-action"
+title="Clear inbox"
+>
+🗑
+</button>
+
+
+<button
+id="testMailBtn"
+class="top-action"
+title="Test mail"
+>
+🧪
+</button>
+
+
+<button
+id="accountBtn"
+class="top-action"
+title="Account"
+>
+👤
+</button>
+
+
+<!-- ACCOUNT MENU -->
+
+<div
+id="accountMenu"
+class="account-menu"
+>
+
+<div class="account-menu-title">
+Current Account
+</div>
+
+<div class="account-menu-email">
+<span id="menuEmail">
+Your email
+</span>
+</div>
+
+<div class="account-menu-key">
+🔑
+<span>••••••••••••</span>
+</div>
+
+<div class="account-menu-divider"></div>
+
+<button id="menuCreateBtn">
+＋ Create New Inbox
+</button>
+
+<button id="logoutBtn" class="logout-btn">
+⇥ Logout
+</button>
+
+</div>
+
+</div>
+
+
+<!-- MAILBOX INFO -->
+
+<div class="mailbox-info">
+
+<div class="info-row">
+
+<div class="info-icon">
+✉
+</div>
+
+<input
+id="email"
+class="info-input"
+type="text"
+readonly
+>
+
+<button
+id="copyBtn2"
+class="info-copy"
+>
+Copy
+</button>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-icon">
+🔑
+</div>
+
+<input
+id="accessKey"
+class="info-input"
+type="password"
+readonly
+placeholder="Your access key"
+>
+
+<button
+id="copyKeyBtn"
+class="info-copy"
+>
+Copy
+</button>
+
+</div>
+
+</div>
+
+
+<!-- SUCCESS -->
+
+<div class="success-message">
+
+<div class="success-icon">
+✓
+</div>
+
+<div>
+
+<strong>
+Temporary email created
+</strong>
+
+<p>
+Your temporary inbox is ready.
+Keep your access key safe.
+</p>
+
+</div>
+
+</div>
+
+
+<!-- INBOX -->
+
+<h2 id="mailCount" class="inbox-title">
+Inbox (0)
+</h2>
+
+
+<div
+id="inbox"
+class="inbox"
+>
+
+<div class="empty-inbox">
+
+<div class="empty-icon">
+✉
+</div>
+
+<h3>
+Inbox is empty
+</h3>
+
+<p>
+You haven't received any emails yet.
+When you do, they'll appear here.
+</p>
+
+</div>
+
+</div>
+
+
+<!-- CREATE NEW -->
+
+<button
+id="backBtn"
+class="new-inbox-btn"
+>
++ Create New Inbox
+</button>
+
+
+<div class="footer">
+Devil Mail • Development Project
+</div>
+
+</div>
+
+</section>
+
+
+<script src="script.js?v=5"></script>
+
+</body>
+
+  </html>

@@ -24,7 +24,7 @@ if (!db.data) {
 app.use(express.json());
 
 app.use(
-    express.static("/public/devil-temp-mail")
+    express.static(".")
 );
 
 

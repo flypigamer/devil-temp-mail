@@ -13,8 +13,9 @@ const pool = new Pool({
     }
 });
 
-app.use(express.json());
+const MAILTM_API = "https://api.mail.tm";
 
+app.use(express.json());
 app.use(express.static("."));
 
 // Create mailbox table
@@ -22,39 +23,109 @@ await pool.query(`
     CREATE TABLE IF NOT EXISTS mailboxes (
         email TEXT PRIMARY KEY,
         access_key TEXT NOT NULL,
-        messages JSONB NOT NULL DEFAULT '[]'::jsonb
+        messages JSONB NOT NULL DEFAULT '[]'::jsonb,
+        mailtm_token TEXT
     )
 `);
 
 console.log("PostgreSQL connected");
 
-// Mail.tm API
-const MAILTM_API = "https://api.mail.tm";
+// Get Mail.tm domain
+async function getMailDomain() {
+    const response = await fetch(`${MAILTM_API}/domains`);
+
+    if (!response.ok) {
+        throw new Error("Could not get Mail.tm domain");
+    }
+
+    const data = await response.json();
+
+    if (!data["hydra:member"]?.length) {
+        throw new Error("No Mail.tm domain available");
+    }
+
+    return data["hydra:member"][0].domain;
+}
 
 // Create New Mailbox
 app.get("/api/new-mailbox", async (req, res) => {
     try {
-        const random =
+        const domain = await getMailDomain();
+
+        const username =
             Math.random()
                 .toString(36)
                 .substring(2, 10);
 
-        const email =
-            random + "@devilmail.local";
+        const email = `${username}@${domain}`;
+
+        const password =
+            crypto.randomBytes(12).toString("hex");
 
         const accessKey =
             crypto.randomBytes(16).toString("hex");
 
+        // Create account on Mail.tm
+        const accountResponse = await fetch(
+            `${MAILTM_API}/accounts`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    address: email,
+                    password: password
+                })
+            }
+        );
+
+        if (!accountResponse.ok) {
+            const errorText = await accountResponse.text();
+            console.error("Mail.tm account error:", errorText);
+
+            return res.status(500).json({
+                error: "Could not create Mail.tm mailbox"
+            });
+        }
+
+        // Login to get token
+        const loginResponse = await fetch(
+            `${MAILTM_API}/token`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    address: email,
+                    password: password
+                })
+            }
+        );
+
+        if (!loginResponse.ok) {
+            return res.status(500).json({
+                error: "Could not login to Mail.tm"
+            });
+        }
+
+        const loginData = await loginResponse.json();
+
+        const token = loginData.token;
+
+        // Save mailbox in PostgreSQL
         await pool.query(
             `
             INSERT INTO mailboxes
-            (email, access_key, messages)
-            VALUES ($1, $2, $3)
+            (email, access_key, messages, mailtm_token)
+            VALUES ($1, $2, $3, $4)
             `,
             [
                 email,
                 accessKey,
-                JSON.stringify([])
+                JSON.stringify([]),
+                token
             ]
         );
 
@@ -73,7 +144,6 @@ app.get("/api/new-mailbox", async (req, res) => {
     }
 });
 
-
 // Get Messages
 app.get("/api/messages", async (req, res) => {
     try {
@@ -82,7 +152,7 @@ app.get("/api/messages", async (req, res) => {
 
         const result = await pool.query(
             `
-            SELECT messages
+            SELECT messages, mailtm_token
             FROM mailboxes
             WHERE email = $1
             AND access_key = $2
@@ -96,6 +166,58 @@ app.get("/api/messages", async (req, res) => {
             });
         }
 
+        const token = result.rows[0].mailtm_token;
+
+        // Get messages from Mail.tm
+        const response = await fetch(
+            `${MAILTM_API}/messages`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        if (response.ok) {
+            const data = await response.json();
+
+            const mailMessages =
+                (data["hydra:member"] || []).map(message => ({
+                    from:
+                        message.from?.address ||
+                        "Unknown",
+                    subject:
+                        message.subject ||
+                        "(No subject)",
+                    text:
+                        message.intro ||
+                        "",
+                    time:
+                        message.createdAt ||
+                        new Date().toISOString()
+                }));
+
+            // Save latest messages
+            await pool.query(
+                `
+                UPDATE mailboxes
+                SET messages = $1
+                WHERE email = $2
+                AND access_key = $3
+                `,
+                [
+                    JSON.stringify(mailMessages),
+                    email,
+                    accessKey
+                ]
+            );
+
+            return res.json({
+                messages: mailMessages
+            });
+        }
+
+        // Fallback to saved messages
         res.json({
             messages: result.rows[0].messages || []
         });
@@ -108,7 +230,6 @@ app.get("/api/messages", async (req, res) => {
         });
     }
 });
-
 
 // Clear Inbox
 app.post("/api/clear-inbox", async (req, res) => {
@@ -144,7 +265,6 @@ app.post("/api/clear-inbox", async (req, res) => {
         });
     }
 });
-
 
 // Test Mail
 app.post("/api/test-message", async (req, res) => {
@@ -204,7 +324,6 @@ app.post("/api/test-message", async (req, res) => {
         });
     }
 });
-
 
 // Start Server
 const PORT =

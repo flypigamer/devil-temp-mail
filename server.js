@@ -28,6 +28,9 @@ await pool.query(`
 
 console.log("PostgreSQL connected");
 
+// Mail.tm API
+const MAILTM_API = "https://api.mail.tm";
+
 // Create New Mailbox
 app.get("/api/new-mailbox", async (req, res) => {
     try {
